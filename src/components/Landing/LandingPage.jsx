@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { signInWithPopup, signInWithEmailAndPassword, createUserWithEmailAndPassword, updateProfile } from 'firebase/auth';
 import { auth, googleProvider } from '../../services/firebase';
 import toast from 'react-hot-toast';
-import '../../landing-redesign.css';
+import './LandingPage.css';
 
 // ─── Inline SVG Icons ─────────────────────────────────────────────────────────
 const IconBolt = () => (
