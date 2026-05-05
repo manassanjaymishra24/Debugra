@@ -53,23 +53,23 @@ export default function HistoryPanel({ user, onLoadCode, onClose }) {
   };
 
   return (
-    <div className="history-panel">
-      <div className="history-header">
-        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+    <div className="history-panel border-start border-secondary">
+      <div className="history-header d-flex align-items-center justify-content-between p-2 border-bottom border-secondary bg-dark">
+        <div className="d-flex align-items-center gap-2">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#8b5cf6" strokeWidth="2">
             <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
           </svg>
-          <span style={{ fontSize: '0.78rem', fontWeight: 600, color: 'var(--text-0)' }}>Saved Code</span>
-          <span className="history-count">{history.length}</span>
+          <span className="small fw-bold text-light">Saved Code</span>
+          <span className="history-count badge bg-primary bg-opacity-25 text-primary-emphasis">{history.length}</span>
         </div>
-        <div style={{ display: 'flex', gap: '4px' }}>
-          <button onClick={loadHistory} className="history-action-btn" title="Refresh">
+        <div className="d-flex gap-1">
+          <button onClick={loadHistory} className="btn btn-link btn-sm p-1 text-secondary history-action-btn" title="Refresh">
             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
               <path d="M1 4v6h6"/><path d="M23 20v-6h-6"/>
               <path d="M20.49 9A9 9 0 0 0 5.64 5.64L1 10m22 4l-4.64 4.36A9 9 0 0 1 3.51 15"/>
             </svg>
           </button>
-          <button onClick={onClose} className="history-action-btn" title="Close">
+          <button onClick={onClose} className="btn btn-link btn-sm p-1 text-secondary history-action-btn" title="Close">
             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
               <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
             </svg>
@@ -77,44 +77,47 @@ export default function HistoryPanel({ user, onLoadCode, onClose }) {
         </div>
       </div>
 
-      <div className="history-list">
+      <div className="history-list p-2 overflow-auto flex-grow-1">
         {loading ? (
-          <div className="history-empty">
-            <span className="spinner" style={{ width: '16px', height: '16px', borderWidth: '2px' }} />
-            <span style={{ fontSize: '0.72rem', color: 'var(--text-2)', marginTop: '8px' }}>Loading...</span>
+          <div className="history-empty d-flex flex-column align-items-center justify-content-center py-5">
+            <div className="spinner-border spinner-border-sm text-secondary" role="status">
+              <span className="visually-hidden">Loading...</span>
+            </div>
+            <span className="small text-secondary mt-2">Loading...</span>
           </div>
         ) : history.length === 0 ? (
-          <div className="history-empty">
-            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--text-2)" strokeWidth="1.5" style={{ opacity: 0.4 }}>
+          <div className="history-empty d-flex flex-column align-items-center justify-content-center py-5 opacity-50">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
               <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
               <polyline points="14 2 14 8 20 8"/>
             </svg>
-            <span style={{ fontSize: '0.72rem', color: 'var(--text-2)', marginTop: '8px' }}>No saved code yet</span>
-            <span style={{ fontSize: '0.65rem', color: 'var(--text-2)', opacity: 0.6 }}>Use Save button to store code</span>
+            <span className="small mt-2">No saved code yet</span>
+            <span className="x-small opacity-75">Use Save button to store code</span>
           </div>
         ) : (
           history.map((item) => (
-            <div key={item.id} className="history-item">
-              <div className="history-item-top">
-                <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flex: 1, minWidth: 0 }}>
-                  <span style={{ fontSize: '0.65rem', fontWeight: 600, color: 'var(--accent)', background: 'var(--bg-2)', padding: '2px 4px', borderRadius: '4px' }}>{LANG_ICONS[item.language] || 'CODE'}</span>
-                  <span className="history-item-name">{item.name || 'untitled'}</span>
+            <div key={item.id} className="history-item p-2 mb-2 rounded border border-transparent bg-hover transition-all">
+              <div className="history-item-top d-flex align-items-center justify-content-between gap-2 mb-2">
+                <div className="d-flex align-items-center gap-2 overflow-hidden">
+                  <span className="badge bg-secondary bg-opacity-25 text-info x-small fw-bold">{LANG_ICONS[item.language] || 'CODE'}</span>
+                  <span className="history-item-name text-truncate small text-light fw-medium">{item.name || 'untitled'}</span>
                 </div>
-                <span className="history-item-time">{formatDate(item.createdAt)}</span>
+                <span className="history-item-time x-small text-secondary flex-shrink-0">{formatDate(item.createdAt)}</span>
               </div>
-              <pre className="history-item-preview">{(item.code || '').slice(0, 120)}{item.code?.length > 120 ? '...' : ''}</pre>
-              <div className="history-item-actions">
-                <button onClick={() => { onLoadCode(item.code, item.language); toast.success('Code loaded!'); }} className="history-load-btn">
+              <pre className="history-item-preview p-2 mb-2 bg-dark rounded border border-secondary text-secondary small text-truncate">
+                {(item.code || '').slice(0, 120)}{item.code?.length > 120 ? '...' : ''}
+              </pre>
+              <div className="history-item-actions d-flex gap-2 mt-2">
+                <button onClick={() => { onLoadCode(item.code, item.language); toast.success('Code loaded!'); }} className="btn btn-sm btn-outline-info flex-grow-1 x-small d-flex align-items-center justify-content-center gap-1 py-1">
                   <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
                     <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/>
                   </svg>
                   Load
                 </button>
-                <button onClick={() => handleDelete(item.id)} className="history-delete-btn">
+                <button onClick={() => handleDelete(item.id)} className="btn btn-sm btn-outline-danger x-small d-flex align-items-center justify-content-center py-1">
                   <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
                     <polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
                   </svg>
-                  Delete
                 </button>
               </div>
             </div>

@@ -92,107 +92,116 @@ export default function LandingPage() {
         </div>
       )}
 
-      <section className="landing-hero">
-        <div className="hero-badge">Free Online Code Editor</div>
-        <h1 className="hero-title">
-          Write. Run. Debug.<br />
-          <span style={{ color: '#e2e8f0' }}>All in One Place.</span>
-        </h1>
-        <p className="hero-subtitle">
-          A VS Code-like editor in your browser. Run 18+ languages, get error
-          explanations, and collaborate in real-time — no setup required.
-        </p>
-        <div className="hero-cta">
-          <button onClick={() => navigate('/editor')} className="landing-btn-primary landing-btn-lg">
-            Open Editor
-          </button>
-          <button onClick={() => setShowLogin(true)} className="landing-btn-outline landing-btn-lg">
-            Sign In
-          </button>
+      <section className="landing-hero container py-5">
+        <div className="row justify-content-center text-center">
+          <div className="col-lg-10">
+            <div className="hero-badge mb-4">Free Online Code Editor</div>
+            <h1 className="hero-title mb-4">
+              Write. Run. Debug.<br />
+              <span className="hero-gradient-text">All in One Place.</span>
+            </h1>
+            <p className="hero-subtitle mb-5">
+              A VS Code-like editor in your browser. Run 18+ languages, get error
+              explanations, and collaborate in real-time — no setup required.
+            </p>
+            <div className="hero-cta d-flex flex-column flex-sm-row gap-3 justify-content-center">
+              <button onClick={() => navigate('/editor')} className="landing-btn-primary landing-btn-lg">
+                Open Editor
+              </button>
+              <button onClick={() => setShowLogin(true)} className="landing-btn-outline landing-btn-lg">
+                Sign In
+              </button>
+            </div>
+            <p className="hero-note mt-4">Sign in to save your code, download files, and collaborate with friends</p>
+          </div>
         </div>
-        <p className="hero-note">Sign in to save your code, download files, and collaborate with friends</p>
       </section>
 
       {/* ===== EDITOR PREVIEW ===== */}
-      <section className="landing-section" style={{ maxWidth: '960px' }}>
-        <div className="editor-preview">
-          <div className="preview-chrome">
-            <div className="preview-dot" style={{ background: '#ff5f57' }} />
-            <div className="preview-dot" style={{ background: '#febc2e' }} />
-            <div className="preview-dot" style={{ background: '#28c840' }} />
-            <span style={{ marginLeft: '12px', fontSize: '0.72rem', color: '#6a6a6a' }}>debugra — main.py — Python 3</span>
-          </div>
-          <div className="preview-toolbar">
-            <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
-              <span className="preview-tag">Python 3</span>
-              <span style={{ fontSize: '0.65rem', color: '#6a6a6a' }}>14px</span>
-            </div>
-            <div style={{ display: 'flex', gap: '6px', alignItems: 'center' }}>
-              <span className="preview-tag">Tests</span>
-              <span className="preview-tag">Explain</span>
-              <span className="preview-tag" style={{ color: '#dcdcaa', borderColor: 'rgba(220,220,170,0.3)' }}>Fix</span>
-              <span className="preview-run-tag">Run</span>
-            </div>
-          </div>
-          <div style={{ display: 'flex', flexDirection: 'row' }} className="preview-body">
-            <div className="preview-code">
-              <code>
-                <span style={{ color: '#6a6a6a' }}>1  </span><span style={{ color: '#569cd6' }}>def</span> <span style={{ color: '#dcdcaa' }}>two_sum</span><span style={{ color: '#d4d4d4' }}>(nums, target):</span>{'\n'}
-                <span style={{ color: '#6a6a6a' }}>2  </span><span style={{ color: '#d4d4d4' }}>    seen = {'{}'}</span>{'\n'}
-                <span style={{ color: '#6a6a6a' }}>3  </span><span style={{ color: '#569cd6' }}>    for</span> <span style={{ color: '#d4d4d4' }}>i, num</span> <span style={{ color: '#569cd6' }}>in</span> <span style={{ color: '#dcdcaa' }}>enumerate</span><span style={{ color: '#d4d4d4' }}>(nums):</span>{'\n'}
-                <span style={{ color: '#6a6a6a' }}>4  </span><span style={{ color: '#d4d4d4' }}>        diff = target - num</span>{'\n'}
-                <span style={{ color: '#6a6a6a' }}>5  </span><span style={{ color: '#569cd6' }}>        if</span> <span style={{ color: '#d4d4d4' }}>diff</span> <span style={{ color: '#569cd6' }}>in</span> <span style={{ color: '#d4d4d4' }}>seen:</span>{'\n'}
-                <span style={{ color: '#6a6a6a' }}>6  </span><span style={{ color: '#d4d4d4' }}>            </span><span style={{ color: '#569cd6' }}>return</span> <span style={{ color: '#d4d4d4' }}>[seen[diff], i]</span>{'\n'}
-                <span style={{ color: '#6a6a6a' }}>7  </span><span style={{ color: '#d4d4d4' }}>        seen[num] = i</span>{'\n'}
-              </code>
-            </div>
-            <div className="preview-divider" />
-            <div className="preview-output">
-              <div style={{ display: 'flex', gap: '2px', marginBottom: '12px' }}>
-                <span className="preview-output-tab active">Output</span>
-                <span className="preview-output-tab">Errors</span>
-                <span className="preview-output-tab">AI</span>
+      <section className="landing-section container py-5">
+        <div className="row justify-content-center">
+          <div className="col-12 col-xl-10">
+            <div className="editor-preview shadow-lg">
+              <div className="preview-chrome">
+                <div className="preview-dot" style={{ background: '#ff5f57' }} />
+                <div className="preview-dot" style={{ background: '#febc2e' }} />
+                <div className="preview-dot" style={{ background: '#28c840' }} />
+                <span className="ms-3 d-none d-sm-inline" style={{ fontSize: '0.72rem', color: '#6a6a6a' }}>debugra — main.py — Python 3</span>
               </div>
-              <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: '0.78rem', color: '#4ec9b0', lineHeight: 1.8 }}>
-                <div className="preview-success-badge">SUCCESS</div>
-                <div style={{ color: '#d4d4d4' }}>[0, 1]</div>
-                <div style={{ color: '#6a6a6a', fontSize: '0.68rem', marginTop: '8px' }}>Time: 0.03s</div>
+              <div className="preview-toolbar flex-wrap gap-2">
+                <div className="d-flex gap-2 align-items-center">
+                  <span className="preview-tag">Python 3</span>
+                  <span className="d-none d-sm-inline" style={{ fontSize: '0.65rem', color: '#6a6a6a' }}>14px</span>
+                </div>
+                <div className="d-flex gap-2 align-items-center">
+                  <span className="preview-tag d-none d-md-inline">Tests</span>
+                  <span className="preview-tag">Explain</span>
+                  <span className="preview-tag" style={{ color: '#dcdcaa', borderColor: 'rgba(220,220,170,0.3)' }}>Fix</span>
+                  <span className="preview-run-tag">Run</span>
+                </div>
               </div>
-            </div>
-          </div>
-          <div className="preview-statusbar">
-            <div style={{ display: 'flex', gap: '12px' }}>
-              <span>Python</span><span>UTF-8</span><span>Ln 7, Col 1</span>
-            </div>
-            <div style={{ display: 'flex', gap: '12px' }}>
-              <span>Wandbox API</span><span>Debugra Editor</span>
+              <div className="row g-0 preview-body flex-column flex-md-row">
+                <div className="col-12 col-md-8 preview-code">
+                  <code>
+                    <span style={{ color: '#6a6a6a' }}>1  </span><span style={{ color: '#569cd6' }}>def</span> <span style={{ color: '#dcdcaa' }}>two_sum</span><span style={{ color: '#d4d4d4' }}>(nums, target):</span>{'\n'}
+                    <span style={{ color: '#6a6a6a' }}>2  </span><span style={{ color: '#d4d4d4' }}>    seen = {'{}'}</span>{'\n'}
+                    <span style={{ color: '#6a6a6a' }}>3  </span><span style={{ color: '#569cd6' }}>    for</span> <span style={{ color: '#d4d4d4' }}>i, num</span> <span style={{ color: '#569cd6' }}>in</span> <span style={{ color: '#dcdcaa' }}>enumerate</span><span style={{ color: '#d4d4d4' }}>(nums):</span>{'\n'}
+                    <span style={{ color: '#6a6a6a' }}>4  </span><span style={{ color: '#d4d4d4' }}>        diff = target - num</span>{'\n'}
+                    <span style={{ color: '#6a6a6a' }}>5  </span><span style={{ color: '#569cd6' }}>        if</span> <span style={{ color: '#d4d4d4' }}>diff</span> <span style={{ color: '#569cd6' }}>in</span> <span style={{ color: '#d4d4d4' }}>seen:</span>{'\n'}
+                    <span style={{ color: '#6a6a6a' }}>6  </span><span style={{ color: '#d4d4d4' }}>            </span><span style={{ color: '#569cd6' }}>return</span> <span style={{ color: '#d4d4d4' }}>[seen[diff], i]</span>{'\n'}
+                    <span style={{ color: '#6a6a6a' }}>7  </span><span style={{ color: '#d4d4d4' }}>        seen[num] = i</span>{'\n'}
+                  </code>
+                </div>
+                <div className="col-12 col-md-4 preview-output border-start border-secondary">
+                  <div className="d-flex gap-1 mb-3">
+                    <span className="preview-output-tab active">Output</span>
+                    <span className="preview-output-tab">Errors</span>
+                    <span className="preview-output-tab">AI</span>
+                  </div>
+                  <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: '0.78rem', color: '#4ec9b0', lineHeight: 1.8 }}>
+                    <div className="preview-success-badge">SUCCESS</div>
+                    <div className="text-light">[0, 1]</div>
+                    <div className="mt-2" style={{ color: '#6a6a6a', fontSize: '0.68rem' }}>Time: 0.03s</div>
+                  </div>
+                </div>
+              </div>
+              <div className="preview-statusbar d-flex justify-content-between px-3">
+                <div className="d-flex gap-3">
+                  <span>Python</span><span className="d-none d-sm-inline">UTF-8</span><span className="d-none d-sm-inline">Ln 7, Col 1</span>
+                </div>
+                <div className="d-flex gap-3">
+                  <span className="d-none d-sm-inline">Wandbox API</span><span>Debugra Editor</span>
+                </div>
+              </div>
             </div>
           </div>
         </div>
       </section>
 
       {/* ===== FEATURES ===== */}
-      <section id="features" className="landing-section" style={{ maxWidth: '1000px' }}>
+      <section id="features" className="landing-section container">
         <h2 className="section-title">Everything You Need</h2>
         <p className="section-subtitle">Professional tools for serious coding — completely free</p>
-        <div className="features-grid">
+        <div className="row g-4 justify-content-center">
           {features.map((f, i) => (
-            <div key={i} className="feature-card">
-              <div className="feature-dot" style={{ background: f.color, boxShadow: `0 0 10px ${f.color}50` }} />
-              <h3 className="feature-title">{f.title}</h3>
-              <p className="feature-desc">{f.desc}</p>
+            <div key={i} className="col-12 col-md-6 col-lg-4">
+              <div className="feature-card h-100">
+                <div className="feature-dot" style={{ background: f.color, boxShadow: `0 0 10px ${f.color}50` }} />
+                <h3 className="feature-title">{f.title}</h3>
+                <p className="feature-desc mb-0">{f.desc}</p>
+              </div>
             </div>
           ))}
         </div>
       </section>
 
       {/* ===== LANGUAGES ===== */}
-      <section id="languages" className="landing-section" style={{ maxWidth: '800px', textAlign: 'center' }}>
+      <section id="languages" className="landing-section container py-5 text-center">
         <h2 className="section-title">18+ Languages Supported</h2>
         <p className="section-subtitle">All powered by the Wandbox compiler — free, no API key needed</p>
-        <div className="lang-tags">
+        <div className="d-flex flex-wrap gap-2 justify-content-center">
           {languages.map(lang => (
-            <span key={lang} className="lang-tag">{lang}</span>
+            <span key={lang} className="lang-tag badge rounded-pill border py-2 px-3">{lang}</span>
           ))}
         </div>
       </section>

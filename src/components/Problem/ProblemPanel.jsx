@@ -20,58 +20,57 @@ export default function ProblemPanel() {
   const problem = PROBLEMS[0];
 
   return (
-    <div className="h-full flex flex-col overflow-hidden" style={{ background: 'var(--bg-primary)' }}>
+    <div className="h-100 d-flex flex-column overflow-hidden bg-dark">
       {/* Header */}
-      <div className="flex items-center gap-2 px-4 py-2.5 flex-shrink-0"
-        style={{ borderBottom: '1px solid var(--border)', background: 'var(--bg-secondary)' }}>
-        <BookOpen size={14} style={{ color: 'var(--text-muted)' }} />
-        <span className="text-xs font-semibold" style={{ color: 'var(--text-secondary)' }}>Problem</span>
+      <div className="d-flex align-items-center gap-2 px-3 py-2 flex-shrink-0 border-bottom border-secondary bg-dark bg-opacity-50">
+        <BookOpen size={14} className="text-secondary" />
+        <span className="small fw-bold text-secondary">Problem</span>
       </div>
 
       {/* Content */}
-      <div className="flex-1 overflow-auto p-4">
+      <div className="flex-grow-1 overflow-auto p-3 custom-scrollbar">
         {/* Title */}
-        <h2 className="text-sm font-bold mb-2" style={{ color: 'var(--text-primary)' }}>
+        <h5 className="fw-bold mb-2 text-light">
           {problem.id}. {problem.title}
-        </h2>
+        </h5>
 
         {/* Tags */}
-        <div className="flex items-center gap-1.5 mb-4 flex-wrap">
-          <span className={`problem-tag problem-tag-${problem.difficulty.toLowerCase()}`}>{problem.difficulty}</span>
+        <div className="d-flex align-items-center gap-2 mb-3 flex-wrap">
+          <span className={`badge problem-tag problem-tag-${problem.difficulty.toLowerCase()}`}>{problem.difficulty}</span>
           {problem.tags.map((tag) => (
-            <span key={tag} className="problem-tag problem-tag-topic">
-              <Tag size={9} /> {tag}
+            <span key={tag} className="badge bg-secondary bg-opacity-25 text-info border border-info border-opacity-10 d-flex align-items-center gap-1">
+              <Tag size={10} /> {tag}
             </span>
           ))}
         </div>
 
         {/* Description */}
-        <p className="text-xs leading-relaxed mb-4" style={{ color: 'var(--text-secondary)' }}>
+        <p className="small text-secondary mb-4 lh-lg">
           {problem.description}
         </p>
 
         {/* Examples */}
         {problem.examples.map((ex, i) => (
-          <div key={i} className="mb-3 p-3 rounded-lg" style={{ background: 'var(--bg-tertiary)', border: '1px solid var(--border)' }}>
-            <div className="text-xs font-semibold mb-1.5" style={{ color: 'var(--text-primary)' }}>Example {i + 1}</div>
-            <div className="font-mono text-xs space-y-1">
-              <div><span style={{ color: '#8b5cf6' }}>Input:</span> <span style={{ color: 'var(--text-secondary)' }}>{ex.input}</span></div>
-              <div><span style={{ color: '#10b981' }}>Output:</span> <span style={{ color: 'var(--text-secondary)' }}>{ex.output}</span></div>
+          <div key={i} className="mb-3 p-3 rounded bg-secondary bg-opacity-10 border border-secondary">
+            <div className="small fw-bold mb-2 text-light">Example {i + 1}</div>
+            <div className="font-monospace small mb-2">
+              <div className="mb-1"><span className="text-primary-emphasis fw-bold">Input:</span> <span className="text-secondary">{ex.input}</span></div>
+              <div><span className="text-success fw-bold">Output:</span> <span className="text-secondary">{ex.output}</span></div>
             </div>
             {ex.explanation && (
-              <div className="text-xs mt-1.5" style={{ color: 'var(--text-muted)' }}>✦ {ex.explanation}</div>
+              <div className="small text-muted mt-2 border-top border-secondary pt-2">✦ {ex.explanation}</div>
             )}
           </div>
         ))}
 
         {/* Constraints */}
         <div className="mt-4">
-          <div className="text-xs font-semibold mb-2 flex items-center gap-1.5" style={{ color: 'var(--text-primary)' }}>
+          <div className="small fw-bold mb-2 d-flex align-items-center gap-2 text-light">
             ✦ Constraints
           </div>
-          <ul className="space-y-1">
+          <ul className="list-unstyled ps-2">
             {problem.constraints.map((c, i) => (
-              <li key={i} className="text-xs font-mono pl-3" style={{ color: 'var(--text-muted)' }}>• {c}</li>
+              <li key={i} className="small font-monospace text-secondary mb-1">• {c}</li>
             ))}
           </ul>
         </div>
