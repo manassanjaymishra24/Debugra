@@ -8,10 +8,11 @@ import toast from 'react-hot-toast';
 import { useRoom, useAI, useExecution, useEditor, useIsMobile } from '../../hooks';
 import { registerSnippets } from '../../utils/snippetsConfig';
 import { LANGUAGES } from '../../utils/languageConfig';
-import { LANG_DOT_CLASS, LANG_FILE_NAMES, MOBILE_TABS, OUTPUT_TABS } from '../../config/constants';
+import { LANG_FILE_NAMES, MOBILE_TABS, OUTPUT_TABS } from '../../config/constants';
 
 import AuthModal from '../Auth/AuthModal';
 import ChatPanel from '../Chat/ChatPanel';
+import FileIcon from '../Icons/FileIcon';
 import HistoryPanel from './HistoryPanel';
 import AIResponsePanel from './AIResponsePanel';
 import CollaborationControls from './CollaborationControls';
@@ -108,6 +109,7 @@ export default function EditorPage({ user }) {
   };
 
   const langConfig = LANGUAGES[editor.language];
+  const editorFileName = LANG_FILE_NAMES[editor.language] || 'main.txt';
 
   return (
     <div style={{ height: '100dvh', display: 'flex', flexDirection: 'column' }}>
@@ -239,8 +241,11 @@ export default function EditorPage({ user }) {
         <div className="editor-pane" style={isMobile && mobileTab !== MOBILE_TABS.CODE ? { display: 'none' } : {}}>
           <div className="editor-tab-bar">
             <div className="editor-tab">
-              <span className={`dot ${LANG_DOT_CLASS[editor.language] || 'dot-default'}`} />
-              <span>{LANG_FILE_NAMES[editor.language] || 'main.txt'}</span>
+              <FileIcon filename={editorFileName} size={17} />
+              <span className="editor-tab-name">{editorFileName}</span>
+              <button className="editor-tab-close" type="button" aria-label={`Close ${editorFileName}`} title="Close tab">
+                ×
+              </button>
             </div>
             {room.roomId && (
               <CollaborationControls
