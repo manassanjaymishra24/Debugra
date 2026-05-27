@@ -35,10 +35,33 @@ export function useExecution({
   const [isRunning, setIsRunning] = useState(false);
   const [activeOutputTab, setActiveOutputTab] = useState(OUTPUT_TABS.STDOUT);
   const [lastProcessedExecutionId, setLastProcessedExecutionId] = useState(null);
+  const [lastProcessedVoteId, setLastProcessedVoteId] = useState(null);
+
+  // Helper UUID generator fallback
+  const generateUUID = () => {
+    if (typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function') {
+      return crypto.randomUUID();
+    }
+    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
+      const r = (Math.random() * 16) | 0;
+      const v = c === 'x' ? r : (r & 0x3) | 0x8;
+      return v.toString(16);
+    });
+  };
 
   // Helper to compile code directly (bypassing vote check when vote is already approved)
   const executeVotedCode = useCallback(
-    async (voteCode, voteLanguage, voteStdin) => {
+    async (voteId) => {
+      // Fetch full code execution payload from the separate Firestore document to avoid size limit
+      const payload = await room.fetchFullVotePayload(voteId);
+      if (!payload) {
+        toast.error("Failed to retrieve code payload for this vote.");
+        await room.clearVote();
+        return;
+      }
+
+      const { code: voteCode, language: voteLanguage, stdin: voteStdin } = payload;
+
       audioFeedback?.prepare?.();
       setIsRunning(true);
       setActiveOutputTab(OUTPUT_TABS.STDOUT);
@@ -56,20 +79,18 @@ export function useExecution({
 
         const isSuccess = result.status?.id === 3;
         const executionResult = {
-          executionId: crypto.randomUUID(),
+          executionId: generateUUID(),
           stdout: result.stdout || '(No output)',
           stderr: result.stderr || '',
           execTime: elapsed + 's',
-          execStatus: isSuccess
-            ? EXEC_STATUS.SUCCESS
-            : { type: 'error', text: result.status?.description || 'Error' },
+          execStatus: isSuccess ? EXEC_STATUS.SUCCESS : EXEC_STATUS.ERROR,
         };
 
-        // Broadcast compilation results to room
+        // Broadcast compilation results to room (capped inside syncExecutionResult)
         await room.syncExecutionResult(executionResult);
       } catch (err) {
         const executionResult = {
-          executionId: crypto.randomUUID(),
+          executionId: generateUUID(),
           stdout: '',
           stderr: err.message || 'Execution failed',
           execTime: null,
@@ -143,14 +164,24 @@ export function useExecution({
     setActiveOutputTab(OUTPUT_TABS.STDOUT);
   }, []);
 
-  // Effect: Watch for vote approval and trigger compile if current user is the initiator
+  // Effect: Watch for vote approval and trigger compile if current user is the initiator (atomic transition check)
   useEffect(() => {
     if (!room?.roomId || !room.roomData?.activeVote || !user) return;
     const vote = room.roomData.activeVote;
-    if (vote.status === 'approved' && vote.initiatorUid === user.uid) {
-      executeVotedCode(vote.code, vote.language, vote.stdin);
+    if (
+      vote.status === 'approved' &&
+      vote.initiatorUid === user.uid &&
+      vote.voteId !== lastProcessedVoteId
+    ) {
+      setLastProcessedVoteId(vote.voteId);
+      // Double locks execution atomically using a transaction to avoid duplicate executing threads
+      room.transitionVoteToExecuting(vote.voteId).then((transitioned) => {
+        if (transitioned) {
+          executeVotedCode(vote.voteId);
+        }
+      });
     }
-  }, [room?.roomId, room?.roomData?.activeVote, user, executeVotedCode]);
+  }, [room?.roomId, room?.roomData?.activeVote, user, executeVotedCode, lastProcessedVoteId, room]);
 
   // Effect: Watch for vote rejections
   useEffect(() => {
@@ -176,10 +207,7 @@ export function useExecution({
       setExecStatus(result.execStatus);
       setLastProcessedExecutionId(result.executionId);
 
-      const isSuccess =
-        result.execStatus === 'success' ||
-        result.execStatus?.type === 'success' ||
-        (typeof result.execStatus === 'object' && result.execStatus.text === 'Success');
+      const isSuccess = result.execStatus?.type === 'success';
 
       if (isSuccess) {
         audioFeedback?.playOutcome?.('success');

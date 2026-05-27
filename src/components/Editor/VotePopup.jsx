@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './VotePopup.css';
 
 /**
@@ -12,33 +12,61 @@ export default function VotePopup({ room, user }) {
   const activeVote = roomData?.activeVote;
   const [showCode, setShowCode] = useState(false);
 
-  if (!activeVote) return null;
-
   const totalUsers = activeUsers?.length || 1;
-  const approvalsCount = activeVote.approvals?.length || 0;
-  const rejectionsCount = activeVote.rejections?.length || 0;
+  const approvalsCount = activeVote?.approvals?.length || 0;
+  const rejectionsCount = activeVote?.rejections?.length || 0;
 
   const approvalPercent = Math.round((approvalsCount / totalUsers) * 100);
   const rejectionPercent = Math.round((rejectionsCount / totalUsers) * 100);
 
-  const hasApproved = activeVote.approvals?.includes(user?.uid);
-  const hasRejected = activeVote.rejections?.includes(user?.uid);
-  const isInitiator = activeVote.initiatorUid === user?.uid;
+  const hasApproved = activeVote?.approvals?.includes(user?.uid);
+  const hasRejected = activeVote?.rejections?.includes(user?.uid);
+  const isInitiator = activeVote?.initiatorUid === user?.uid;
 
   // Consensus threshold: strictly greater than 50%
   const requiredApprovals = Math.floor(totalUsers / 2) + 1;
 
+  // Scroll lock effect
+  useEffect(() => {
+    if (!activeVote) return;
+    document.body.style.overflow = 'hidden';
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [activeVote]);
+
+  // Escape key handler for closing the vote (initiator only)
+  useEffect(() => {
+    if (!activeVote || !isInitiator) return;
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape') {
+        clearVote();
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [activeVote, isInitiator, clearVote]);
+
+  if (!activeVote) return null;
+
   return (
     <div className="vp-overlay">
-      <div className="vp-container">
+      <div
+        className="vp-container"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="vp-title"
+      >
         {/* Header */}
         <div className="vp-header">
-          <div className="vp-header-title">
+          <div className="vp-header-title" id="vp-title">
             <span className="vp-icon">🗳️</span>
             <span>Democratic Execution Vote</span>
           </div>
           {isInitiator && (
-            <button className="vp-cancel-btn" onClick={clearVote} title="Cancel Vote">
+            <button className="vp-cancel-btn" onClick={clearVote} title="Cancel Vote (Esc)">
               Cancel
             </button>
           )}
@@ -110,7 +138,7 @@ export default function VotePopup({ room, user }) {
             </button>
           </div>
 
-          {/* Collapsible Code Preview */}
+          {/* Collapsible Code Preview (Uses Lightweight Firestore Previews) */}
           <div className="vp-preview-section">
             <button className="vp-preview-toggle" onClick={() => setShowCode(!showCode)}>
               <span>{showCode ? '▼ Hide Code Preview' : '▶ Show Code Preview'}</span>
@@ -118,11 +146,11 @@ export default function VotePopup({ room, user }) {
             </button>
             {showCode && (
               <div className="vp-code-box">
-                <pre><code>{activeVote.code}</code></pre>
-                {activeVote.stdin && (
+                <pre><code>{activeVote.codePreview}</code></pre>
+                {activeVote.stdinPreview && (
                   <div className="vp-stdin-preview">
                     <strong>stdin:</strong>
-                    <pre><code>{activeVote.stdin}</code></pre>
+                    <pre><code>{activeVote.stdinPreview}</code></pre>
                   </div>
                 )}
               </div>
