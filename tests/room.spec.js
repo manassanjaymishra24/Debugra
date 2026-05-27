@@ -6,10 +6,9 @@ test('has title and can navigate to authentication modal', async ({ page }) => {
   // Expect a title "to contain" a substring.
   await expect(page).toHaveTitle(/Debugra/);
 
-  // Click the "Join Room" button
-  await page.getByRole('button', { name: /Join Room/i }).first().click();
+  // Click the "Open Editor" button
+  await page.getByRole('button', { name: /Open Editor/i }).first().click();
 
-  // Expect an Auth Modal to appear since user is not logged in
-  await expect(page.locator('.modal-content')).toBeVisible();
-  await expect(page.locator('text=Sign In')).toBeVisible();
+  // Expect to navigate to the editor
+  await expect(page).toHaveURL(/.*\/editor/);
 });
