@@ -85,6 +85,18 @@ export function useRoom({ user, code, language, stdinValue, setCode, setLanguage
     return () => clearTimeout(timer);
   }, [code, language, stdinValue, roomId, user, roomData?.currentEditor]);
 
+  // ─── Sync active file (language) for presence ───────────────────────────────
+  useEffect(() => {
+    if (!roomId || !user || !roomData) return;
+    const currentUsers = roomData.activeUsers || [];
+    const myIndex = currentUsers.findIndex((u) => u.uid === user.uid);
+    if (myIndex !== -1 && currentUsers[myIndex].activeFile !== language) {
+      const newUsers = [...currentUsers];
+      newUsers[myIndex] = { ...newUsers[myIndex], activeFile: language };
+      updateDoc(doc(db, 'rooms', roomId), { activeUsers: newUsers }).catch(() => {});
+    }
+  }, [roomId, user, roomData, language]);
+
   // ─── Auto-join from local storage ───────────────────────────────────────────
   useEffect(() => {
     const savedRoomId = localStorage.getItem('debugra_roomId');
