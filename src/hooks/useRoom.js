@@ -1,7 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import {
-  doc, setDoc, updateDoc, onSnapshot, serverTimestamp, getDoc,
-} from 'firebase/firestore';
+import { doc, setDoc, updateDoc, onSnapshot, serverTimestamp, getDoc } from 'firebase/firestore';
 import { db } from '../services/firebase';
 import toast from 'react-hot-toast';
 
@@ -10,9 +8,7 @@ const ROOM_AUTH_PREFIX = 'debugra_roomAuth_';
 async function hashRoomPassword(password, salt) {
   const encoded = new TextEncoder().encode(`${salt}:${password}`);
   const digest = await crypto.subtle.digest('SHA-256', encoded);
-  return [...new Uint8Array(digest)]
-    .map((byte) => byte.toString(16).padStart(2, '0'))
-    .join('');
+  return [...new Uint8Array(digest)].map((byte) => byte.toString(16).padStart(2, '0')).join('');
 }
 
 function createRoomSalt() {
@@ -79,7 +75,9 @@ export function useRoom({ user, code, language, stdinValue, setCode, setLanguage
     if (roomData.currentEditor !== user.uid) return;
     const timer = setTimeout(() => {
       updateDoc(doc(db, 'rooms', roomId), {
-        code, language, stdin: stdinValue,
+        code,
+        language,
+        stdin: stdinValue,
         _lastEditor: user.uid,
         updatedAt: serverTimestamp(),
       }).catch(() => {});
@@ -98,83 +96,93 @@ export function useRoom({ user, code, language, stdinValue, setCode, setLanguage
   }, [user, roomId]); // Join logic uses the function below
 
   // ─── Create room ────────────────────────────────────────────────────────────
-  const createRoom = useCallback(async (roomPassword = '') => {
-    if (!user) return false; // let caller show auth modal
-    const id = crypto.randomUUID().slice(0, 8);
-    const displayName = user.displayName || user.email?.split('@')[0] || 'Guest';
-    const trimmedPassword = roomPassword.trim();
-    const passwordSalt = trimmedPassword ? createRoomSalt() : null;
-    const passwordHash = trimmedPassword
-      ? await hashRoomPassword(trimmedPassword, passwordSalt)
-      : null;
+  const createRoom = useCallback(
+    async (roomPassword = '') => {
+      if (!user) return false; // let caller show auth modal
+      const id = crypto.randomUUID().slice(0, 8);
+      const displayName = user.displayName || user.email?.split('@')[0] || 'Guest';
+      const trimmedPassword = roomPassword.trim();
+      const passwordSalt = trimmedPassword ? createRoomSalt() : null;
+      const passwordHash = trimmedPassword
+        ? await hashRoomPassword(trimmedPassword, passwordSalt)
+        : null;
 
-    await setDoc(doc(db, 'rooms', id), {
-      name: `Room ${id}`,
-      createdBy: user.uid,
-      isPrivate: Boolean(passwordHash),
-      passwordSalt,
-      passwordHash,
-      code,
-      language,
-      activeUsers: [{ uid: user.uid, displayName }],
-      allowedEditors: [user.uid],
-      currentEditor: user.uid,
-      editRequests: [],
-      createdAt: serverTimestamp(),
-      updatedAt: serverTimestamp(),
-    });
-    setRoomId(id);
-    localStorage.setItem('debugra_roomId', id);
-    rememberRoomAccess(id);
-    toast.success(`Room created! ID: ${id}`);
-    navigator.clipboard.writeText(id);
-    return true;
-  }, [user, code, language]);
+      await setDoc(doc(db, 'rooms', id), {
+        name: `Room ${id}`,
+        createdBy: user.uid,
+        isPrivate: Boolean(passwordHash),
+        passwordSalt,
+        passwordHash,
+        code,
+        language,
+        activeUsers: [{ uid: user.uid, displayName }],
+        allowedEditors: [user.uid],
+        currentEditor: user.uid,
+        editRequests: [],
+        createdAt: serverTimestamp(),
+        updatedAt: serverTimestamp(),
+      });
+      setRoomId(id);
+      localStorage.setItem('debugra_roomId', id);
+      rememberRoomAccess(id);
+      toast.success(`Room created! ID: ${id}`);
+      navigator.clipboard.writeText(id);
+      return true;
+    },
+    [user, code, language]
+  );
 
   // ─── Join room ──────────────────────────────────────────────────────────────
-  const joinRoom = useCallback(async (joinId, roomPassword = '') => {
-    if (!user || !joinId.trim()) return false;
-    const newRoomId = joinId.trim();
-    try {
-      const roomRef = doc(db, 'rooms', newRoomId);
-      const roomSnap = await getDoc(roomRef);
-      if (!roomSnap.exists()) { toast.error('Room not found'); return false; }
-      const data = roomSnap.data();
-      const currentUsers = data.activeUsers || [];
-      const isCreator = data.createdBy === user.uid;
-      const isAllowed = data.allowedEditors?.includes(user.uid);
-      const needsPassword = data.passwordHash && !isCreator && !isAllowed && !hasRememberedRoomAccess(newRoomId);
-
-      if (needsPassword) {
-        const suppliedPassword = roomPassword.trim();
-        if (!suppliedPassword) {
-          toast.error('Room passcode required');
+  const joinRoom = useCallback(
+    async (joinId, roomPassword = '') => {
+      if (!user || !joinId.trim()) return false;
+      const newRoomId = joinId.trim();
+      try {
+        const roomRef = doc(db, 'rooms', newRoomId);
+        const roomSnap = await getDoc(roomRef);
+        if (!roomSnap.exists()) {
+          toast.error('Room not found');
           return false;
         }
+        const data = roomSnap.data();
+        const currentUsers = data.activeUsers || [];
+        const isCreator = data.createdBy === user.uid;
+        const isAllowed = data.allowedEditors?.includes(user.uid);
+        const needsPassword =
+          data.passwordHash && !isCreator && !isAllowed && !hasRememberedRoomAccess(newRoomId);
 
-        const suppliedHash = await hashRoomPassword(suppliedPassword, data.passwordSalt);
-        if (suppliedHash !== data.passwordHash) {
-          toast.error('Invalid room passcode');
-          return false;
+        if (needsPassword) {
+          const suppliedPassword = roomPassword.trim();
+          if (!suppliedPassword) {
+            toast.error('Room passcode required');
+            return false;
+          }
+
+          const suppliedHash = await hashRoomPassword(suppliedPassword, data.passwordSalt);
+          if (suppliedHash !== data.passwordHash) {
+            toast.error('Invalid room passcode');
+            return false;
+          }
         }
-      }
 
-      const displayName = user.displayName || user.email?.split('@')[0] || 'Guest';
-      if (!currentUsers.some((u) => u.uid === user.uid)) {
-        await updateDoc(roomRef, {
-          activeUsers: [...currentUsers, { uid: user.uid, displayName }],
-        });
+        const displayName = user.displayName || user.email?.split('@')[0] || 'Guest';
+        if (!currentUsers.some((u) => u.uid === user.uid)) {
+          await updateDoc(roomRef, {
+            activeUsers: [...currentUsers, { uid: user.uid, displayName }],
+          });
+        }
+        setRoomId(newRoomId);
+        localStorage.setItem('debugra_roomId', newRoomId);
+        rememberRoomAccess(newRoomId);
+        toast.success(`Joined room: ${newRoomId}`);
+        return true;
+      } catch {
+        toast.error('Failed to join room');
+        return false;
       }
-      setRoomId(newRoomId);
-      localStorage.setItem('debugra_roomId', newRoomId);
-      rememberRoomAccess(newRoomId);
-      toast.success(`Joined room: ${newRoomId}`);
-      return true;
-    } catch {
-      toast.error('Failed to join room');
-      return false;
-    }
-  }, [user]);
+    },
+    [user]
+  );
 
   // ─── Access control ─────────────────────────────────────────────────────────
   const requestAccess = useCallback(async () => {
@@ -191,29 +199,41 @@ export function useRoom({ user, code, language, stdinValue, setCode, setLanguage
     toast.success('Requested edit access from the author.');
   }, [user, roomId, roomData]);
 
-  const approveAccess = useCallback(async (requestUid) => {
-    if (!roomId || !roomData || !isAuthor) return;
-    const newAllowed = [...new Set([...(roomData.allowedEditors || []), requestUid])];
-    const newRequests = (roomData.editRequests || []).filter((r) => r.uid !== requestUid);
-    await updateDoc(doc(db, 'rooms', roomId), { allowedEditors: newAllowed, editRequests: newRequests });
-    toast.success('Access granted.');
-  }, [roomId, roomData, isAuthor]);
+  const approveAccess = useCallback(
+    async (requestUid) => {
+      if (!roomId || !roomData || !isAuthor) return;
+      const newAllowed = [...new Set([...(roomData.allowedEditors || []), requestUid])];
+      const newRequests = (roomData.editRequests || []).filter((r) => r.uid !== requestUid);
+      await updateDoc(doc(db, 'rooms', roomId), {
+        allowedEditors: newAllowed,
+        editRequests: newRequests,
+      });
+      toast.success('Access granted.');
+    },
+    [roomId, roomData, isAuthor]
+  );
 
-  const denyAccess = useCallback(async (requestUid) => {
-    if (!roomId || !roomData || !isAuthor) return;
-    const newRequests = (roomData.editRequests || []).filter((r) => r.uid !== requestUid);
-    await updateDoc(doc(db, 'rooms', roomId), { editRequests: newRequests });
-    toast('Access denied.');
-  }, [roomId, roomData, isAuthor]);
+  const denyAccess = useCallback(
+    async (requestUid) => {
+      if (!roomId || !roomData || !isAuthor) return;
+      const newRequests = (roomData.editRequests || []).filter((r) => r.uid !== requestUid);
+      await updateDoc(doc(db, 'rooms', roomId), { editRequests: newRequests });
+      toast('Access denied.');
+    },
+    [roomId, roomData, isAuthor]
+  );
 
-  const revokeAccess = useCallback(async (revokeUid) => {
-    if (!roomId || !roomData || !isAuthor) return;
-    const newAllowed = (roomData.allowedEditors || []).filter((uid) => uid !== revokeUid);
-    const updates = { allowedEditors: newAllowed };
-    if (roomData.currentEditor === revokeUid) updates.currentEditor = null;
-    await updateDoc(doc(db, 'rooms', roomId), updates);
-    toast('Access revoked.');
-  }, [roomId, roomData, isAuthor]);
+  const revokeAccess = useCallback(
+    async (revokeUid) => {
+      if (!roomId || !roomData || !isAuthor) return;
+      const newAllowed = (roomData.allowedEditors || []).filter((uid) => uid !== revokeUid);
+      const updates = { allowedEditors: newAllowed };
+      if (roomData.currentEditor === revokeUid) updates.currentEditor = null;
+      await updateDoc(doc(db, 'rooms', roomId), updates);
+      toast('Access revoked.');
+    },
+    [roomId, roomData, isAuthor]
+  );
 
   const takeControl = useCallback(async () => {
     if (!user || !roomId || !isAllowedEditor) return;

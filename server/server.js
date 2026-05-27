@@ -77,7 +77,12 @@ function requireSecurityDiagnosticsAccess(req, res, next) {
   return next();
 }
 
-const defaultDevOrigins = ['http://localhost:5173', 'http://127.0.0.1:5173'];
+const defaultDevOrigins = [
+  'http://localhost:5173',
+  'http://127.0.0.1:5173',
+  'https://debugra.tech',
+  'https://www.debugra.tech'
+];
 const allowedOrigins = (
   process.env.CORS_ORIGINS ||
   process.env.CLIENT_URL ||

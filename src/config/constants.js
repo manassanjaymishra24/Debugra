@@ -11,10 +11,10 @@ export const MAX_FONT_SIZE = 28;
 // ─── Editor Themes ────────────────────────────────────────────────────────────
 export const DEFAULT_THEME = 'vs-dark';
 export const EDITOR_THEMES = [
-  { id: 'vs-dark',  label: 'VS Dark'  },
-  { id: 'vs',       label: 'VS Light' },
-  { id: 'dracula',  label: 'Dracula'  },
-  { id: 'monokai',  label: 'Monokai'  },
+  { id: 'vs-dark', label: 'VS Dark' },
+  { id: 'vs', label: 'VS Light' },
+  { id: 'dracula', label: 'Dracula' },
+  { id: 'monokai', label: 'Monokai' },
 ];
 
 // ─── Output / Panel Widths ────────────────────────────────────────────────────
