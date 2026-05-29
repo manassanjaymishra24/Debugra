@@ -40,6 +40,8 @@ import VideoCall from './VideoCall';
 import VotePopup from './VotePopup';
 import { getSessionApiKey, isSecureApiKeyStored } from '../../services/secureApiKeyStore';
 import DebugOverlay from './DebugOverlay';
+import Loader from '../Loader';
+
 
 function getApiKeyStatus() {
   if (getSessionApiKey()) return 'unlocked';
@@ -1486,6 +1488,9 @@ export default function EditorPage({ user }) {
 
       {/* Real-time Democratic Vote Popup */}
       <VotePopup room={room} user={user} />
+
+      {/* Premium Full-Screen Code Execution Loading Overlay */}
+      <Loader isVisible={execution.isRunning} />
     </div>
   );
 }
