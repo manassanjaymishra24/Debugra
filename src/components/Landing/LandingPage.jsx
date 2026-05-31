@@ -272,6 +272,39 @@ const REVIEWS = [
   },
 ];
 
+const FAQ_ITEMS = [
+  {
+    question: 'What is Debugra?',
+    answer:
+      'Debugra is a browser-based coding workspace with an editor, execution engine, AI debugging tools, and real-time collaboration.',
+  },
+  {
+    question: 'Do I need an account to try it?',
+    answer:
+      'No. You can open the editor and start coding right away. An account is only needed if you want to save code or use sign-in features.',
+  },
+  {
+    question: 'Can I use Debugra for job applications or recruiter reviews?',
+    answer:
+      'Debugra is built for coding, debugging, and collaboration. It is not a job-application portal, but you can use it to prepare code samples, demos, and live walkthroughs for interviews or reviews.',
+  },
+  {
+    question: 'How does shared access work?',
+    answer:
+      'You can create a room and share the room ID with collaborators. Room owners control access and can manage who joins and edits.',
+  },
+  {
+    question: 'What happens to saved code and account data?',
+    answer:
+      'Signed-in users can save snippets and revisit them later. Authentication and saved content are handled through the app’s Firebase-backed services.',
+  },
+  {
+    question: 'How is privacy handled?',
+    answer:
+      'Use the editor without sharing anything sensitive. For saved code, room data, and authentication, Debugra only keeps what is needed to support those features. If a formal privacy policy is required, it should be published alongside the site.',
+  },
+];
+
 // ─── Tag accent colors ─────────────────────────────────────────────────────────
 const TAG_COLORS = {
   AI: { bg: 'rgba(139,92,246,0.15)', color: '#a78bfa' },
@@ -290,6 +323,7 @@ export default function LandingPage() {
   const [name, setName] = useState('');
   const [loading, setLoading] = useState(false);
   const [mobileMenu, setMobileMenu] = useState(false);
+  const [openFaq, setOpenFaq] = useState(0);
   const [canScrollFeaturesLeft, setCanScrollFeaturesLeft] = useState(false);
   const [canScrollFeaturesRight, setCanScrollFeaturesRight] = useState(false);
 
@@ -400,6 +434,9 @@ export default function LandingPage() {
           <a href="#languages" className="landing-nav-link">
             Languages
           </a>
+          <a href="#faq" className="landing-nav-link">
+            FAQ
+          </a>
           <button onClick={() => setShowLogin(true)} className="landing-btn-outline">
             Log In
           </button>
@@ -455,6 +492,9 @@ export default function LandingPage() {
             onClick={() => setMobileMenu(false)}
           >
             Languages
+          </a>
+          <a href="#faq" className="mobile-dropdown-link" onClick={() => setMobileMenu(false)}>
+            FAQ
           </a>
           <button
             onClick={() => {
@@ -513,7 +553,7 @@ export default function LandingPage() {
               >
                 <polygon points="5 3 19 12 5 21 5 3" />
               </svg>
-              Open Editor — it&apos;s free 
+              Open Editor — it&apos;s free
             </button>
             <button onClick={() => setShowLogin(true)} className="landing-btn-ghost landing-btn-lg">
               Sign in to save code
@@ -755,6 +795,46 @@ export default function LandingPage() {
       Hear what developers think about Debugra and share your own experience.
     </p>
   </div>
+
+      {/* ===== FAQ ===== */}
+      <section id="faq" className="landing-section container">
+        <div className="section-header">
+          <p className="section-eyebrow">FAQ</p>
+          <h2 className="section-title">
+            Common questions,
+            <br />
+            <span style={{ color: 'var(--text-mid)' }}>answered in one place.</span>
+          </h2>
+          <p className="section-subtitle">
+            Quick answers about the platform, accounts, collaboration, and privacy.
+          </p>
+        </div>
+
+        <div className="faq-list">
+          {FAQ_ITEMS.map((item, index) => {
+            const isOpen = openFaq === index;
+            return (
+              <div key={item.question} className={`faq-item ${isOpen ? 'is-open' : ''}`}>
+                <button
+                  type="button"
+                  className="faq-question"
+                  aria-expanded={isOpen}
+                  aria-controls={`faq-answer-${index}`}
+                  onClick={() => setOpenFaq(isOpen ? -1 : index)}
+                >
+                  <span>{item.question}</span>
+                  <span className="faq-toggle" aria-hidden="true">
+                    {isOpen ? '−' : '+'}
+                  </span>
+                </button>
+                <div id={`faq-answer-${index}`} className="faq-answer" hidden={!isOpen}>
+                  <p>{item.answer}</p>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </section>
 
   <div className="reviews-grid">
     {REVIEWS.map((review, index) => (
