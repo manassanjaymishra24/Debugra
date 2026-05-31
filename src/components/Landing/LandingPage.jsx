@@ -9,6 +9,7 @@ import {
 import { auth, googleProvider } from '../../services/firebase';
 import toast from 'react-hot-toast';
 import './LandingPage.css';
+import { Link } from "react-router-dom";
 
 // ─── Inline SVG Icons ─────────────────────────────────────────────────────────
 const IconBolt = () => (
@@ -325,6 +326,9 @@ export default function LandingPage() {
           <a href="#languages" className="landing-nav-link">
             Languages
           </a>
+          <Link to="/contributors" className="landing-nav-link">
+            Contributors
+          </Link>
           <button onClick={() => setShowLogin(true)} className="landing-btn-outline">
             Log In
           </button>
@@ -381,6 +385,9 @@ export default function LandingPage() {
           >
             Languages
           </a>
+          <Link to="/contributors" className="landing-nav-link">
+            Contributors
+          </Link>
           <button
             onClick={() => {
               setShowLogin(true);

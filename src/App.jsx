@@ -7,6 +7,7 @@ import LandingPage from './components/Landing/LandingPage';
 import EditorPage from './components/Editor/EditorPage';
 import VideoCall from './components/Editor/VideoCall';
 import OfflineBanner from './components/Editor/OfflineBanner';
+import ContributorsPage from './components/Landing/ContributorsPage';
 
 export default function App() {
   const [user, setUser] = useState(null);
@@ -50,6 +51,7 @@ export default function App() {
         />
         {/* Local-only test route that does not use Firestore/room presence */}
         <Route path="/voice-test-local" element={<VideoCall userName={'Playwright'} audioOnly />} />
+        <Route path="/contributors" element={<ContributorsPage />} />
       </Routes>
     </BrowserRouter>
   );
