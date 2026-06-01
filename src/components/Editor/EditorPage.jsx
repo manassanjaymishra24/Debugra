@@ -60,33 +60,31 @@ export default function EditorPage({ user }) {
 
   // ─── UI State ──────────────────────────────────────────────────────────────
   const [copied, setCopied] = useState(false);
-  const [showAuth, setShowAuth] = useState(false);
-  const [authMode, setAuthMode] = useState('login');
-  const [showHistory, setShowHistory] = useState(false);
-  const [chatOpen, setChatOpen] = useState(false);
-  // const [showApiKey, setShowApiKey] = useState(false);
-  const [showApiKey, setShowApiKey] = useState(false);
-  const [showAccount, setShowAccount] = useState(false);
-  const [selectedModel, setSelectedModel] = useState('llama-3.3-70b-versatile');
-  const [showAccount, setShowAccount] = useState(false);
-  const [apiKeyStatus, setApiKeyStatus] = useState(getApiKeyStatus);
-  const [mobileTab, setMobileTab] = useState(MOBILE_TABS.CODE);
-  const [showJoin, setShowJoin] = useState(false);
-  const [joinId, setJoinId] = useState('');
-  const [joinPassword, setJoinPassword] = useState('');
-  const [roomPassword, setRoomPassword] = useState('');
-  const [isOutputCollapsed, setIsOutputCollapsed] = useState(false);
-  const [outputWidth, setOutputWidth] = useState(420);
-  const [minimapSide, setMinimapSide] = useState('right');
-  const [showSettings, setShowSettings] = useState(false);
-  const [showVideoCall, setShowVideoCall] = useState(false);
-  const [showVoiceCall, setShowVoiceCall] = useState(false);
-  const [blurIntensity, setBlurIntensity] = useState(10); //Adds State for wallpaper blur
-  const [showDebugOverlay, setShowDebugOverlay] = useState(false);
-  const [consoleCollapsed, setConsoleCollapsed] = useState(false);
-  const [showComplexityOverlay, setShowComplexityOverlay] = useState(false);
-  const resizingRef = useRef(false);
+const [showAuth, setShowAuth] = useState(false);
+const [authMode, setAuthMode] = useState('login');
+const [showHistory, setShowHistory] = useState(false);
+const [chatOpen, setChatOpen] = useState(false);
+const [showApiKey, setShowApiKey] = useState(false);
+const [showAccount, setShowAccount] = useState(false);
+const [selectedModel, setSelectedModel] = useState('llama-3.3-70b-versatile');
+const [apiKeyStatus, setApiKeyStatus] = useState(getApiKeyStatus);
+const [mobileTab, setMobileTab] = useState(MOBILE_TABS.CODE);
+const [showJoin, setShowJoin] = useState(false);
+const [joinId, setJoinId] = useState('');
+const [joinPassword, setJoinPassword] = useState('');
+const [roomPassword, setRoomPassword] = useState('');
+const [isOutputCollapsed, setIsOutputCollapsed] = useState(false);
+const [outputWidth, setOutputWidth] = useState(420);
+const [minimapSide, setMinimapSide] = useState('right');
+const [showSettings, setShowSettings] = useState(false);
+const [showVideoCall, setShowVideoCall] = useState(false);
+const [showVoiceCall, setShowVoiceCall] = useState(false);
+const [blurIntensity, setBlurIntensity] = useState(10);
+const [showDebugOverlay, setShowDebugOverlay] = useState(false);
+const [consoleCollapsed, setConsoleCollapsed] = useState(false);
+const [showComplexityOverlay, setShowComplexityOverlay] = useState(false);
 
+const resizingRef = useRef(false);
   const toggleConsoleCollapsed = () => {
     setConsoleCollapsed((prev) => !prev);
   };

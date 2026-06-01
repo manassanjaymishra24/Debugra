@@ -836,7 +836,7 @@ export default function LandingPage() {
         </div>
       </section>
 
-  <div className="reviews-grid">
+  {/* <div className="reviews-grid">
     {REVIEWS.map((review, index) => (
       <div key={index} className="review-card">
         <div className="review-stars">
@@ -852,7 +852,26 @@ export default function LandingPage() {
         </span>
       </div>
     ))}
+  </div> */}
+  <div className="reviews-carousel">
+  <div className="reviews-track">
+    {[...REVIEWS, ...REVIEWS].map((review, index) => (
+      <div key={index} className="review-card">
+        <div className="review-stars">
+          {'★'.repeat(review.rating)}
+        </div>
+
+        <p className="review-text">
+          "{review.review}"
+        </p>
+
+        <span className="review-author">
+          — {review.name}
+        </span>
+      </div>
+    ))}
   </div>
+</div>
 
   <div className="feedback-form-card">
     <h3 style={{ marginBottom: '16px' }}>Share Your Feedback</h3>
