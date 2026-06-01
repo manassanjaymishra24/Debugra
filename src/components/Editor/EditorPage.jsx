@@ -68,7 +68,6 @@ export default function EditorPage({ user }) {
   const [showApiKey, setShowApiKey] = useState(false);
   const [showAccount, setShowAccount] = useState(false);
   const [selectedModel, setSelectedModel] = useState('llama-3.3-70b-versatile');
-  const [showAccount, setShowAccount] = useState(false);
   const [apiKeyStatus, setApiKeyStatus] = useState(getApiKeyStatus);
   const [mobileTab, setMobileTab] = useState(MOBILE_TABS.CODE);
   const [showJoin, setShowJoin] = useState(false);
@@ -659,6 +658,9 @@ export default function EditorPage({ user }) {
                 title="Account settings"
               >
                 Account
+              </button>
+              <button className="topbar-link" onClick={() => navigate('/feedback')}>
+                Feedback
               </button>
               <div className="user-avatar">{user.displayName?.[0]?.toUpperCase() || '?'}</div>
               <span
