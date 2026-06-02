@@ -146,6 +146,8 @@ function buildCspDirectives() {
       'https://firestore.googleapis.com',
       'https://wandbox.org',
       'https://cdn.jsdelivr.net',
+      'https://debugra.onrender.com',
+      'https://*.onrender.com',
     ]),
     fontSrc: ["'self'", 'https://fonts.gstatic.com', 'data:'],
     objectSrc: ["'none'"],
