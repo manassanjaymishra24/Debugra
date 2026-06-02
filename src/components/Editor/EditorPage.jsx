@@ -5,7 +5,7 @@ import { signOut } from 'firebase/auth';
 import { auth } from '../../services/firebase';
 import Editor from '@monaco-editor/react';
 import toast from 'react-hot-toast';
-import { Eye, EyeOff, Settings } from 'lucide-react';
+import { Eye, EyeOff, Settings, FolderOpen } from 'lucide-react';
 import { Menu } from 'lucide-react';
 
 import {
@@ -18,7 +18,7 @@ import {
 } from '../../hooks';
 import { registerSnippets } from '../../utils/snippetsConfig';
 import { ensureEditorFontLoaded, getEditorFontFamily } from '../../utils/editorFonts';
-import { LANGUAGES } from '../../utils/languageConfig';
+import { LANGUAGES, detectLanguageByFileName } from '../../utils/languageConfig';
 import {
   LANG_FILE_NAMES,
   MOBILE_TABS,
@@ -59,6 +59,7 @@ export default function EditorPage({ user }) {
   const navigate = useNavigate();
   const editorRef = useRef(null);
   const monacoRef = useRef(null);
+  const fileInputRef = useRef(null);
 
   // ─── UI State ──────────────────────────────────────────────────────────────
   const [copied, setCopied] = useState(false);
@@ -113,6 +114,40 @@ export default function EditorPage({ user }) {
     } catch (err) {
       toast.error('Failed to copy output');
     }
+  };
+
+  const handleFileImport = (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (file.size > 5 * 1024 * 1024) {
+      toast.error('File is too large (max 5MB)');
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      const content = event.target.result;
+      const detectedLang = detectLanguageByFileName(file.name);
+
+      editor.loadCode(content, detectedLang);
+
+      if (detectedLang) {
+        toast.success(`Imported ${file.name} (detected ${LANGUAGES[detectedLang].name})`);
+      } else {
+        toast.success(`Imported ${file.name} as text`);
+      }
+
+      if (fileInputRef.current) {
+        fileInputRef.current.value = '';
+      }
+    };
+
+    reader.onerror = () => {
+      toast.error('Failed to read file');
+    };
+
+    reader.readAsText(file);
   };
 
   const editor = useEditor({
@@ -891,6 +926,22 @@ export default function EditorPage({ user }) {
             Fix
           </button>
           <div className="d-flex align-items-center gap-1">
+            <input
+              type="file"
+              ref={fileInputRef}
+              style={{ display: 'none' }}
+              onChange={handleFileImport}
+              accept=".py,.js,.jsx,.ts,.tsx,.java,.cpp,.cc,.cxx,.h,.hpp,.c,.cs,.go,.rs,.rb,.php,.swift,.pl,.pm,.lua,.scala,.hs,.sql,.sh,.txt"
+            />
+            <button
+              className="toolbar-icon-btn"
+              aria-label="Import File"
+              onClick={() => fileInputRef.current?.click()}
+              title="Import file"
+              disabled={room.isReadOnly}
+            >
+              <FolderOpen size={14} />
+            </button>
             <button
               className="toolbar-icon-btn"
               aria-label="Download Code"
@@ -1138,6 +1189,39 @@ export default function EditorPage({ user }) {
                 ×
               </button>
             </div>
+            <button
+              className="editor-tab-action-btn"
+              onClick={() => fileInputRef.current?.click()}
+              title="Import File"
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '4px',
+                padding: '2px 8px',
+                margin: '0 8px',
+                fontSize: '0.68rem',
+                color: 'var(--text-1)',
+                background: 'rgba(255, 255, 255, 0.05)',
+                border: '1px dashed var(--border)',
+                borderRadius: '4px',
+                cursor: 'pointer',
+                transition: 'all 0.2s ease',
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.color = 'var(--text-0)';
+                e.currentTarget.style.background = 'rgba(255, 255, 255, 0.08)';
+                e.currentTarget.style.borderColor = 'var(--accent)';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.color = 'var(--text-1)';
+                e.currentTarget.style.background = 'rgba(255, 255, 255, 0.05)';
+                e.currentTarget.style.borderColor = 'var(--border)';
+              }}
+              disabled={room.isReadOnly}
+            >
+              <FolderOpen size={11} />
+              <span>Import File</span>
+            </button>
             {room.roomId && (
               <div style={{ display: 'flex', alignItems: 'center', marginLeft: 'auto' }}>
                 <AudioChannel room={room} user={user} />
@@ -1270,7 +1354,9 @@ export default function EditorPage({ user }) {
         </div>
 
         {/* Resize Handle (desktop only) */}
-        {!isMobile && !isOutputCollapsed && <div className="resize-handle" onMouseDown={handleResizeStart} />}
+        {!isMobile && !isOutputCollapsed && (
+          <div className="resize-handle" onMouseDown={handleResizeStart} />
+        )}
 
         {/* History Panel (desktop) */}
         {showHistory && user && !isMobile && (
@@ -1289,7 +1375,11 @@ export default function EditorPage({ user }) {
               ? mobileTab === MOBILE_TABS.OUTPUT
                 ? { display: 'flex', width: '100%' }
                 : { display: 'none' }
-              : { width: isOutputCollapsed ? '0px' : outputWidth + 'px', minWidth: isOutputCollapsed ? '0' : '260px', overflow: 'hidden' }
+              : {
+                  width: isOutputCollapsed ? '0px' : outputWidth + 'px',
+                  minWidth: isOutputCollapsed ? '0' : '260px',
+                  overflow: 'hidden',
+                }
           }
         >
           <div className="output-tabs">
@@ -1323,8 +1413,9 @@ export default function EditorPage({ user }) {
               }}
             >
               <button
-                className={`output-tab ${execution.activeOutputTab === OUTPUT_TABS.STDOUT ? 'active' : ''
-                  }`}
+                className={`output-tab ${
+                  execution.activeOutputTab === OUTPUT_TABS.STDOUT ? 'active' : ''
+                }`}
                 onClick={() => execution.setActiveOutputTab(OUTPUT_TABS.STDOUT)}
               >
                 Output
@@ -1413,12 +1504,19 @@ export default function EditorPage({ user }) {
             )}
             <button
               className="output-collapse-btn"
-              onClick={() => setIsOutputCollapsed(prev => !prev)}
+              onClick={() => setIsOutputCollapsed((prev) => !prev)}
               title={isOutputCollapsed ? 'Restore Console' : 'Minimize Console'}
               aria-label={isOutputCollapsed ? 'Restore Console' : 'Minimize Console'}
             >
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                <polyline points={isOutputCollapsed ? "15 18 9 12 15 6" : "6 9 12 15 18 9"} />
+              <svg
+                width="12"
+                height="12"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2.5"
+              >
+                <polyline points={isOutputCollapsed ? '15 18 9 12 15 6' : '6 9 12 15 18 9'} />
               </svg>
             </button>
           </div>
@@ -1687,8 +1785,8 @@ export default function EditorPage({ user }) {
         />
       )}
 
-{/* Real-time Democratic Vote Popup */}
-<VotePopup room={room} user={user} />
+      {/* Real-time Democratic Vote Popup */}
+      <VotePopup room={room} user={user} />
 
       {/* Mobile Drawer */}
       <MobileDrawer
