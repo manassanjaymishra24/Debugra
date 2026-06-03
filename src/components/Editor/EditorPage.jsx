@@ -1775,6 +1775,7 @@ export default function EditorPage({ user }) {
       {showVideoCall && room.roomId && (
         <VideoCall
           roomId={room.roomId}
+          userId={user?.uid}
           userName={user?.displayName || user?.email?.split('@')[0] || 'Guest'}
           onClose={() => setShowVideoCall(false)}
         />
