@@ -893,6 +893,7 @@
 .contributors-stat-card:hover .contributors-stat-image {
   transform: scale(1.08) rotate(-4deg);
   background: rgba(78,201,176,0.12);
+}
 /* ─── Password Toggle ───────────────────────── */
 
 .password-wrapper {
