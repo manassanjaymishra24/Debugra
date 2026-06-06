@@ -386,7 +386,157 @@ body {
   width: 130px;
 }
 
+/* ─── Room Session Badge Group ─────────────────────────────────────────────
+   Appears in the topbar when a Firebase collaboration room is active.       */
+
+.room-badge-group {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding-left: 10px;
+  border-left: 1px solid var(--border);
+  margin-left: 4px;
+}
+
+/* Room ID Chip */
+.room-id-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 3px 9px;
+  border-radius: 5px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.68rem;
+  font-weight: 500;
+  color: var(--success);
+  background: rgba(78, 201, 176, 0.08);
+  border: 1px solid rgba(78, 201, 176, 0.22);
+  cursor: pointer;
+  white-space: nowrap;
+  transition:
+    background 0.18s ease,
+    border-color 0.18s ease,
+    box-shadow 0.18s ease;
+}
+
+.room-id-chip:hover {
+  background: rgba(78, 201, 176, 0.15);
+  border-color: rgba(78, 201, 176, 0.45);
+  box-shadow: 0 0 0 2px rgba(78, 201, 176, 0.1);
+}
+
+/* Flash state after a successful copy */
+.room-id-chip.copied {
+  background: rgba(78, 201, 176, 0.25);
+  border-color: rgba(78, 201, 176, 0.6);
+  box-shadow: 0 0 0 3px rgba(78, 201, 176, 0.15);
+}
+
+/* Copy icon — hidden by default, slides in on hover */
+.room-id-chip__icon {
+  opacity: 0;
+  transform: translateX(-3px);
+  transition:
+    opacity 0.15s ease,
+    transform 0.15s ease;
+  flex-shrink: 0;
+  color: var(--success);
+}
+
+.room-id-chip:hover .room-id-chip__icon {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+/* Live Users Bubble */
+.room-live-bubble {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 3px 8px;
+  border-radius: 5px;
+  font-size: 0.68rem;
+  font-weight: 600;
+  color: var(--success);
+  background: rgba(78, 201, 176, 0.07);
+  border: 1px solid rgba(78, 201, 176, 0.18);
+  user-select: none;
+  white-space: nowrap;
+}
+
+/* Pulsing green dot */
+.room-live-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--success);
+  flex-shrink: 0;
+  animation: room-pulse 2s ease-in-out infinite;
+}
+
+@keyframes room-pulse {
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.45;
+    transform: scale(0.7);
+  }
+}
+
+/* ─── Light theme overrides for Room Badge ── */
+[data-theme='light'] .room-id-chip {
+  color: var(--green);
+  background: rgba(14, 112, 91, 0.07);
+  border-color: rgba(14, 112, 91, 0.22);
+}
+
+[data-theme='light'] .room-id-chip:hover {
+  background: rgba(14, 112, 91, 0.13);
+  border-color: rgba(14, 112, 91, 0.4);
+  box-shadow: 0 0 0 2px rgba(14, 112, 91, 0.1);
+}
+
+[data-theme='light'] .room-id-chip.copied {
+  background: rgba(14, 112, 91, 0.2);
+  border-color: rgba(14, 112, 91, 0.55);
+  box-shadow: 0 0 0 3px rgba(14, 112, 91, 0.12);
+}
+
+[data-theme='light'] .room-id-chip__icon {
+  color: var(--green);
+}
+
+[data-theme='light'] .room-live-bubble {
+  color: var(--green);
+  background: rgba(14, 112, 91, 0.06);
+  border-color: rgba(14, 112, 91, 0.18);
+}
+
+[data-theme='light'] .room-live-dot {
+  background: var(--green);
+}
+
+/* Mobile: hide full Room ID, show shortened version */
+@media (max-width: 600px) {
+  .room-id-chip__full {
+    display: none;
+  }
+  .room-id-chip__short {
+    display: inline;
+  }
+}
+
+@media (min-width: 601px) {
+  .room-id-chip__short {
+    display: none;
+  }
+}
+
 /* User avatar circle */
+
 .user-avatar {
   width: 22px;
   height: 22px;
