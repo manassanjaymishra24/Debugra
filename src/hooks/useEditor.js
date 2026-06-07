@@ -1,5 +1,4 @@
 import { useState, useCallback, useEffect, useMemo, useRef } from 'react';
-import { useState, useCallback, useEffect, useRef } from 'react';
 import toast from 'react-hot-toast';
 import { collection, addDoc, doc, setDoc, serverTimestamp } from 'firebase/firestore';
 import { db } from '../services/firebase';
@@ -358,8 +357,6 @@ export function useEditor({ user, onNeedAuth }) {
     setCode: updateCode,
     language,
     setLanguage: updateLanguage,
-
-    setLanguage,
     fontSize,
     setFontSize,
     fontFamily,

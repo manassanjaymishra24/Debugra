@@ -20,8 +20,6 @@ export default function EditorStatusBar({
   isOffline = false,
   hasPendingChanges = false,
   tabSize,
-  room,
-  user,
   vimEnabled,
   vimMode,
 }) {
