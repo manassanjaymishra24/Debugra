@@ -1153,6 +1153,10 @@ export default function EditorPage({ user }) {
         cursorPos={editor.cursorPos}
         room={room}
         user={user}
+        saveStatus={editor.saveStatus}
+        lastSavedAt={editor.lastSavedAt}
+        isOffline={editor.isOffline}
+        hasPendingChanges={editor.hasPendingChanges}
       />
 
       {/* Chat */}
