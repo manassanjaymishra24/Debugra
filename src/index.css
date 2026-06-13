@@ -3623,6 +3623,10 @@ input[type='password']::-ms-clear {
     flex: 1;
     min-height: 0;
   }
+
+  .output-panel {
+    padding-bottom: calc(68px + env(safe-area-inset-bottom, 0px)) !important;
+  }
 }
 
 /* ============ WELCOME TOUR ============ */
