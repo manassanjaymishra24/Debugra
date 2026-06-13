@@ -715,7 +715,7 @@ export default function LandingPage() {
                   <span className="preview-tag">Python 3</span>
                   <span
                     className="d-none d-sm-inline"
-                    style={{ fontSize: '0.65rem', color: '#6a6a6a' }}
+                    style={{ fontSize: '0.65rem', color: '#9d9d9d' }}
                   >
                     14px
                   </span>
@@ -782,7 +782,7 @@ export default function LandingPage() {
                   >
                     <div className="preview-success-badge">✓ SUCCESS</div>
                     <div className="mt-2">[0, 1]</div>
-                    <div className="mt-2" style={{ color: '#6a6a6a', fontSize: '0.68rem' }}>
+                    <div className="mt-2" style={{ color: '#9d9d9d', fontSize: '0.68rem' }}>
                       Time: 0.03s
                     </div>
                   </div>
@@ -987,9 +987,9 @@ export default function LandingPage() {
               toast.success('Thank you for your feedback!');
             }}
           >
-            <input type="text" placeholder="Your Name" className="modal-input" required />
+            <input type="text" placeholder="Your Name" aria-label="Your Name" className="modal-input" required />
 
-            <select className="modal-input" required>
+            <select className="modal-input" aria-label="Select Rating" required>
               <option value="">Select Rating</option>
               <option value="5">★★★★★ (5)</option>
               <option value="4">★★★★☆ (4)</option>
@@ -1000,6 +1000,7 @@ export default function LandingPage() {
 
             <textarea
               placeholder="Tell us about your experience..."
+              aria-label="Your feedback"
               className="modal-input"
               rows="4"
               required
@@ -1049,7 +1050,7 @@ export default function LandingPage() {
               Create free account
             </button>
           </div>
-          <p style={{ marginTop: '20px', fontSize: '0.75rem', color: '#4a4a6a' }}>
+          <p style={{ marginTop: '20px', fontSize: '0.75rem', color: '#9d9d9d' }}>
             debugra.tech · Free · Open Source
           </p>
         </div>
@@ -1082,7 +1083,7 @@ export default function LandingPage() {
         <div className="modal-backdrop" onClick={() => setShowLogin(false)}>
           <div className="modal-card" onClick={(e) => e.stopPropagation()}>
             {/* CLOSE BUTTON - ADD HERE */}
-            <button className="modal-close-btn" onClick={() => setShowLogin(false)}>
+            <button className="modal-close-btn" aria-label="Close dialog" onClick={() => setShowLogin(false)}>
               ✕
             </button>
 

@@ -112,13 +112,14 @@ const Footer = () => {
         {/* Social / Connect */}
         <div className="space-y-3">
           <h4 className="text-white font-semibold uppercase tracking-wider text-xs">Connect</h4>
-          <div className="flex space-x-4 text-[#a1a1aa]">
+          <div className="flex space-x-3 text-[#a1a1aa]">
             {/* GitHub SVG */}
             <a
               href="https://github.com"
               target="_blank"
               rel="noreferrer"
-              className="hover:text-white transition-colors"
+              className="hover:text-white transition-colors inline-flex items-center justify-center"
+              style={{ minWidth: '44px', minHeight: '44px' }}
               aria-label="GitHub"
             >
               <svg
@@ -139,7 +140,8 @@ const Footer = () => {
               href="https://twitter.com"
               target="_blank"
               rel="noreferrer"
-              className="hover:text-[#1da1f2] transition-colors"
+              className="hover:text-[#1da1f2] transition-colors inline-flex items-center justify-center"
+              style={{ minWidth: '44px', minHeight: '44px' }}
               aria-label="Twitter"
             >
               <svg
@@ -159,7 +161,8 @@ const Footer = () => {
               href="https://linkedin.com"
               target="_blank"
               rel="noreferrer"
-              className="hover:text-[#0077b5] transition-colors"
+              className="hover:text-[#0077b5] transition-colors inline-flex items-center justify-center"
+              style={{ minWidth: '44px', minHeight: '44px' }}
               aria-label="LinkedIn"
             >
               <svg
