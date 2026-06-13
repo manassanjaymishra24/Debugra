@@ -6158,3 +6158,23 @@ details[open] .debug-stderr-summary::before {
   border-color: rgba(0, 0, 0, 0.08);
 }
 
+/* Prevent Tailwind preflight from resizing logo images */
+.landing-nav-left img {
+  height: 26px !important;
+  width: auto !important;
+  max-width: none !important;
+}
+
+.landing-footer img {
+  height: 14px !important;
+  width: auto !important;
+  max-width: none !important;
+}
+
+.topbar-logo img {
+  height: 20px !important;
+  width: auto !important;
+  max-width: none !important;
+}
+
+
