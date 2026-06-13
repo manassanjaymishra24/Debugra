@@ -1,4 +1,4 @@
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { useEffect, useRef, useState } from 'react';
 import { Eye, EyeOff } from 'lucide-react';
 import {
@@ -312,8 +312,22 @@ const REVIEWS = [
 ];
 export default function LandingPage() {
   const navigate = useNavigate();
+  const location = useLocation();
   const featuresCarouselRef = useRef(null);
   const { theme, toggleTheme } = useTheme();
+
+  // Scroll to hash on page load/navigation change
+  useEffect(() => {
+    if (location.hash) {
+      const id = location.hash.substring(1);
+      const element = document.getElementById(id);
+      if (element) {
+        setTimeout(() => {
+          element.scrollIntoView({ behavior: 'smooth' });
+        }, 100);
+      }
+    }
+  }, [location.hash]);
   const [showLogin, setShowLogin] = useState(false);
   const [isSignUp, setIsSignUp] = useState(false);
   const [email, setEmail] = useState('');
@@ -431,7 +445,7 @@ export default function LandingPage() {
     <div className="landing-root">
       {/* ===== NAVBAR ===== */}
       <nav className="landing-nav">
-        <div className="landing-nav-left">
+        <Link to="/" className="landing-nav-left text-decoration-none">
           <img
             src={theme === 'light' ? '/icon-light.svg' : '/icon-dark.svg'}
             height="26"
@@ -439,7 +453,7 @@ export default function LandingPage() {
           />
           <span className="landing-logo">Debugra</span>
           <span className="landing-version-badge">v1.0</span>
-        </div>
+        </Link>
         <div className="landing-nav-right desktop-only">
           <a href="#features" className="landing-nav-link">
             Features
@@ -1040,28 +1054,6 @@ export default function LandingPage() {
           </p>
         </div>
       </section>
-
-      {/* ===== FOOTER ===== */}
-      <footer className="landing-footer">
-        <div className="d-flex align-items-center gap-2 justify-content-center mb-1">
-          <img
-            src={theme === 'light' ? '/icon-light.svg' : '/icon-dark.svg'}
-            height="14"
-            alt="Debugra Logo"
-          />
-          <span className="landing-footer-logo-text">Debugra</span>
-        </div>
-
-        <p style={{ margin: 0, fontSize: '0.72rem', color: '#4a4a6a' }}>
-          © {new Date().getFullYear()} Debugra · Built for Hackathon SVKM 2026 ·{' '}
-          <a
-            href="https://github.com/omkhandare55/Debugra"
-            style={{ color: '#6a6a8a', textDecoration: 'none' }}
-          >
-            GitHub
-          </a>
-        </p>
-      </footer>
 
       {/* ===== BACK TO TOP ===== */}
       {showBackToTop && (

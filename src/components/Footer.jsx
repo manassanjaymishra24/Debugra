@@ -37,21 +37,24 @@ const Footer = () => {
           <ul className="space-y-2 text-xs">
             <li>
               <a
-                href="#features"
-                className="hover:text-[#4fc1ff] hover:underline transition-colors"
+                href="/#features"
+                className="text-[#858585] hover:text-[#4fc1ff] hover:underline transition-colors"
               >
                 Features
               </a>
             </li>
             <li>
-              <a href="#docs" className="hover:text-[#4fc1ff] hover:underline transition-colors">
+              <a
+                href="/#docs"
+                className="text-[#858585] hover:text-[#4fc1ff] hover:underline transition-colors"
+              >
                 Documentation
               </a>
             </li>
             <li>
               <a
-                href="#playground"
-                className="hover:text-[#4fc1ff] hover:underline transition-colors"
+                href="/#playground"
+                className="text-[#858585] hover:text-[#4fc1ff] hover:underline transition-colors"
               >
                 Playground
               </a>
@@ -59,7 +62,7 @@ const Footer = () => {
             <li>
               <Link
                 to="/feedback"
-                className="hover:text-[#4fc1ff] hover:underline transition-colors"
+                className="text-[#858585] hover:text-[#4fc1ff] hover:underline transition-colors"
               >
                 Feedback
               </Link>
@@ -73,29 +76,32 @@ const Footer = () => {
           <ul className="space-y-2 text-xs">
             <li>
               <a
-                href="#changelog"
-                className="hover:text-[#4fc1ff] hover:underline transition-colors"
+                href="/#changelog"
+                className="text-[#858585] hover:text-[#4fc1ff] hover:underline transition-colors"
               >
                 Changelog
               </a>
             </li>
             <li>
               <a
-                href="#contributing"
-                className="hover:text-[#4fc1ff] hover:underline transition-colors"
+                href="/#contributing"
+                className="text-[#858585] hover:text-[#4fc1ff] hover:underline transition-colors"
               >
                 Contributing
               </a>
             </li>
             <li>
-              <a href="#license" className="hover:text-[#4fc1ff] hover:underline transition-colors">
+              <a
+                href="/#license"
+                className="text-[#858585] hover:text-[#4fc1ff] hover:underline transition-colors"
+              >
                 MIT License
               </a>
             </li>
             <li>
               <Link
                 to="/feedback"
-                className="hover:text-[#4fc1ff] hover:underline transition-colors"
+                className="text-[#858585] hover:text-[#4fc1ff] hover:underline transition-colors"
               >
                 Contact Team
               </Link>
